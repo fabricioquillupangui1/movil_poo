@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POO Ultimate Guide - Android Dev</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --sidebar: #161b22;
+            --accent: #58a6ff;
+            --kotlin: #8957e5;
+            --android: #2ea043;
+            --text: #c9d1d9;
+            --code-bg: #010409;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Navegación */
+        .sidebar {
+            width: 300px;
+            background: var(--sidebar);
+            border-right: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            background: #010409;
+            border-bottom: 2px solid var(--kotlin);
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            border-bottom: 1px solid #30363d;
+            transition: 0.2s;
+        }
+
+        .menu-btn:hover { background: #21262d; }
+        .active {
+            background: #21262d;
+            color: var(--accent);
+            border-left: 4px solid var(--accent);
+            font-weight: bold;
+        }
+
+        /* Contenido */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .card { animation: slideIn 0.3s ease-out; }
+
+        .info-box {
+            background: #21262d;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #30363d;
+            margin: 20px 0;
+        }
+
+        code {
+            display: block;
+            background: var(--code-bg);
+            color: #d2a8ff;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            margin: 15px 0;
+            border: 1px solid #30363d;
+            line-height: 1.5;
+        }
+
+        /* Preview Móvil */
+        .mobile-pane {
+            width: 360px;
+            background: #010409;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #30363d;
+        }
+
+        .phone {
+            width: 260px;
+            height: 530px;
+            background: #000;
+            border: 10px solid #21262d;
+            border-radius: 40px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            background: #ffffff;
+            height: 100%;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .screen-header {
+            background: var(--kotlin);
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 style="margin:0; color:var(--accent);">Programación orientada a objetos</h2>
+            <small>Desarrollo de software</small>
+        </div>
+        <button class="menu-btn active" onclick="update(0)">1. Clases y Objetos</button>
+        <button class="menu-btn" onclick="update(1)">2. Herencia</button>
+        <button class="menu-btn" onclick="update(2)">3. Polimorfismo</button>
+        <button class="menu-btn" onclick="update(3)">4. Interfaces</button>
+        <button class="menu-btn" onclick="update(4)">5. Clases Abstractas</button>
+        <button class="menu-btn" onclick="update(5)">6. Encapsulamiento</button>
+        <button class="menu-btn" onclick="update(6)">7. Composición</button>
+        <button class="menu-btn" onclick="update(7)">8. Data Classes</button>
+        <button class="menu-btn" onclick="update(8)">9. Sealed Classes (Estados)</button>
+        <button class="menu-btn" onclick="update(9)">10. Singleton (Objetos Únicos)</button>
+        <button class="menu-btn" onclick="update(10)">11. Video explicativo</button>
+    </aside>
+
+    <main class="main-content" id="content-area"></main>
+
+    <aside class="mobile-pane">
+        <div class="phone">
+            <div class="screen">
+                <div class="screen-header" id="phone-title">Preview</div>
+                <div id="phone-body" style="padding:20px;"></div>
+            </div>
+        </div>
+    </aside>
+
+    <script>
+        const topics = [
+            {
+    title: "1. Clases y Objetos",
+    desc: `<b>Clase:</b> Es el molde o plano (blueprint). Define qué datos tendrá y qué acciones podrá realizar un elemento, pero no existe por sí solo.<br><br>
+           <b>Objeto:</b> Es la instancia real. Es cuando tomamos ese molde y le damos datos específicos para que ocupe un lugar en la memoria del celular.`,
+    
+    // Conceptos clave con sus definiciones y ejemplos
+    feat: [
+        "<b>Atributos (Variables):</b> Son las características del objeto. <br><i>Ejemplo:</i> El color o el nombre de un usuario.",
+        "<b>Métodos (Funciones):</b> Son las acciones que el objeto puede realizar. <br><i>Ejemplo:</i> un botón que puede 'hacerClick()' o un usuario que puede 'iniciarSesion()'.",
+        "<b>Instancia:</b> Es el proceso de crear el objeto a partir de la clase usando parámetros reales."
+    ],
+ex1: `<span style="color: #cc7832; font-weight: bold;">class</span> <span style="color: #ffc66d;">Usuario</span>( <span style="color: #808080;">&nbsp;// Definición de la Clase</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832;">val</span> <span style="color: #9876aa;">nombre</span>: <span style="color: #a9b7c6;">String</span>, <span style="color: #808080;">&nbsp;// Atributo (Nombre)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832;">var</span> <span style="color: #9876aa;">estaOnline</span>: <span style="color: #a9b7c6;">Boolean</span> <span style="color: #808080;">&nbsp;// Atributo (Estado)</span><br>
+) { <span style="color: #808080;">&nbsp;// Inicio del cuerpo</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">conectar</span>() { <span style="color: #808080;">&nbsp;// Método (Acción)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #9876aa;">estaOnline</span> = <span style="color: #cc7832;">true</span> <span style="color: #808080;">&nbsp;// Cambio de estado</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">user1</span> = <span style="color: #ffc66d;">Usuario</span>(<span style="color: #6a8759;">"Alex"</span>, <span style="color: #cc7832;">false</span>) <span style="color: #808080;">&nbsp;// INSTANCIA</span><br>
+<span style="color: #a9b7c6;">user1</span>.<span style="color: #ffc66d;">conectar</span>() <span style="color: #808080;">&nbsp;// LLAMADA AL MÉTODO</span><br>
+<span style="color: #ffc66d;">println</span>(<span style="color: #a9b7c6;">user1</span>.<span style="color: #9876aa;">estaOnline</span>) <span style="color: #808080;">&nbsp;// RESULTADO: true</span>`
+   ,
+
+    // Explicación mejorada para la pantalla del móvil
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 50px; height: 50px; background: #7f52ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">AD</div>
+                <div>
+                    <b style="font-size: 16px;">Alex Dev</b><br>
+                    <span style="font-size: 12px; color: #666;">@alex_developer</span>
+                </div>
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 10px;">
+                <div style="text-align: center;"><b>1250</b><br><small>Seguidores</small></div>
+                <div style="text-align: center;"><b>450</b><br><small>Siguiendo</small></div>
+            </div>
+            <button style="width: 100%; margin-top: 15px; background: #3ddc84; border: none; padding: 10px; border-radius: 8px; color: white; font-weight: bold; cursor: pointer;">
+                Seguir (Método)
+            </button>
+        </div>
+        <p style="font-size: 11px; color: #555; margin-top: 10px; text-align: center;">
+            <i>Esta tarjeta es un <b>Objeto</b>. El diseño es la <b>Clase</b>. El nombre "Alex Dev" es un <b>Atributo</b> y el botón es un <b>Método</b>.</i>
+        </p>
+    `
+},
+            {
+    title: "2. Herencia",
+    desc: `<b>Clase Padre (Superclase):</b> Es la clase original que contiene el código que queremos compartir.<br><br>
+           <b>Clase Hija (Subclase):</b> Es la clase que recibe todo el "ADN" del padre y puede añadir sus propias funciones.`,
+    
+    feat: [
+        "<b>Open:</b> En Kotlin, las clases son cerradas por defecto. Debes usar 'open' para permitir que tengan hijos.",
+        "<b>Símbolo ':':</b> Se usa para indicar que una clase está heredando de otra.",
+        "<b>Reutilización:</b> Los hijos pueden usar métodos del padre sin tener que volver a escribirlos."
+    ],
+
+    // Ejemplo 1: Definición de la jerarquía (El Molde Padre e Hijo)
+    ex1: `<span style="color: #cc7832; font-weight: bold;">open class</span> <span style="color: #ffc66d;">BaseActivity</span>() { <span style="color: #808080;">&nbsp;// Clase PADRE marcada como 'open'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">mostrarCargando</span>() { <span style="color: #808080;">&nbsp;// Método que heredarán todos los hijos</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">println</span>(<span style="color: #6a8759;">"Mostrando Spinner..."</span>) <span style="color: #808080;">&nbsp;// Lógica común</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+<span style="color: #cc7832; font-weight: bold;">class</span> <span style="color: #ffc66d;">MainActivity</span> : <span style="color: #ffc66d;">BaseActivity</span>() { <span style="color: #808080;">&nbsp;// Clase HIJA que hereda con ':'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">login</span>() { <span style="color: #808080;">&nbsp;// Método propio y único de la hija</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">mostrarCargando</span>() <span style="color: #808080;">&nbsp;// Llamada al método del PADRE</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    // Ejemplo 2: Ejecución en la App
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">pantalla</span> = <span style="color: #ffc66d;">MainActivity</span>() <span style="color: #808080;">&nbsp;// Creamos objeto de la clase hija</span><br>
+<span style="color: #a9b7c6;">pantalla</span>.<span style="color: #ffc66d;">login</span>() <span style="color: #808080;">&nbsp;// Ejecuta login (Hija) y mostrarCargando (Padre)</span>`,
+
+    ui: `
+        <style> @keyframes spin { to { transform: rotate(360deg); } } </style>
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <div style="background: #e7f3ff; border: 1px dashed #2196f3; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                <small style="color: #2196f3; font-weight: bold;">LOGICA PADRE (BaseActivity)</small><br>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                    <div style="width: 15px; height: 15px; border: 2px solid #2196f3; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <span>Cargando sistema...</span>
+                </div>
+            </div>
+            <div style="background: #f8f9fa; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
+                <small style="color: #666;">PANTALLA HIJA (MainActivity)</small>
+                <h4 style="margin: 10px 0;">Bienvenido de nuevo</h4>
+                <button style="width: 100%; padding: 10px; background: #2ea043; color: white; border: none; border-radius: 6px; font-weight: bold;">
+                    HEREDAR CARGA Y ENTRAR
+                </button>
+            </div>
+        </div>
+    `
+},
+            {
+    title: "3. Polimorfismo",
+    desc: `<b>Polimorfismo:</b> Significa "muchas formas". Permite tratar a diferentes objetos de la misma manera si comparten un padre común.<br><br>
+           <b>Override:</b> Es la palabra clave que usa el hijo para "reescribir" una función del padre y darle su propio comportamiento.`,
+    
+    feat: [
+        "<b>Override:</b> Permite que una subclase personalice un método heredado.",
+        "<b>Flexibilidad:</b> Puedes crear una lista de diferentes objetos y procesarlos con un solo bucle.",
+        "<b>Escalabilidad:</b> Puedes añadir nuevos tipos de componentes sin cambiar el código que los dibuja."
+    ],
+
+    // Ejemplo 1: Definición de la clase base y las versiones personalizadas
+    ex1: `<span style="color: #cc7832; font-weight: bold;">open class</span> <span style="color: #ffc66d;">Componente</span> { <span style="color: #808080;">&nbsp;&nbsp;&nbsp;// Clase base</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">open fun</span> <span style="color: #ffc66d;">renderizar</span>() { <span style="color: #808080;">&nbsp;// Método 'open' para permitir cambios</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">println</span>(<span style="color: #6a8759;">"Dibujando genérico"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}<br>
+<br>
+<span style="color: #cc7832; font-weight: bold;">class</span> <span style="color: #ffc66d;">Boton</span> : <span style="color: #ffc66d;">Componente</span>() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">override fun</span> <span style="color: #ffc66d;">renderizar</span>() { <span style="color: #808080;">&nbsp;// El hijo 'sobreescribe' la función</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">println</span>(<span style="color: #6a8759;">"Dibujando un Botón"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    // Ejemplo 2: Uso del polimorfismo (Tratando a todos como 'Componente')
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">lista</span>: <span style="color: #a9b7c6;">List</span>&lt;<span style="color: #ffc66d;">Componente</span>&gt; = <span style="color: #ffc66d;">listOf</span>(<span style="color: #ffc66d;">Boton</span>(), <span style="color: #ffc66d;">Switch</span>())<br>
+<br>
+<span style="color: #a9b7c6;">lista</span>.<span style="color: #ffc66d;">forEach</span> { <span style="color: #a9b7c6;">it</span>.<span style="color: #ffc66d;">renderizar</span>() } <span style="color: #808080;">&nbsp;// Cada uno se dibuja a su forma</span>`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <p style="margin: 0 0 15px 0; font-size: 13px; color: #666;">Lista de <b>Componentes</b> (Polimorfismo):</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button style="width: 100%; padding: 10px; background: #7f52ff; color: white; border: none; border-radius: 6px; font-weight: bold;">
+                    Componente Botón
+                </button>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f8f9fa; border-radius: 6px; border: 1px solid #ddd;">
+                    <span>Componente Switch</span>
+                    <div style="width: 40px; height: 20px; background: #3ddc84; border-radius: 10px; position: relative;">
+                        <div style="width: 16px; height: 16px; background: white; border-radius: 50%; position: absolute; right: 2px; top: 2px;"></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 10px; padding: 5px;">
+                    <input type="checkbox" checked disabled>
+                    <span>Componente Checkbox</span>
+                </div>
+            </div>
+        </div>
+    `
+},
+           {
+    title: "4. Interfaces",
+    desc: `<b>Interfaz:</b> Es un contrato de comportamiento. No guarda datos, solo define acciones que las clases deben cumplir.<br><br>
+           <b>Implementación:</b> Cuando una clase usa una interfaz, está obligada a escribir el código de todas sus funciones.`,
+    
+    feat: [
+        "<b>Contratos:</b> Aseguran que diferentes clases tengan los mismos métodos (ej: todas las redes sociales deben tener 'compartir').",
+        "<b>Sin Estado:</b> Las interfaces no pueden guardar valores temporales (variables var), solo definir funciones.",
+        "<b>Desacoplamiento:</b> Permite que el código sea más flexible al no depender de una clase específica."
+    ],
+
+    // Ejemplo 1: Definición del Contrato
+    ex1: `<span style="color: #cc7832; font-weight: bold;">interface</span> <span style="color: #ffc66d;">AccionesUsuario</span> { <span style="color: #808080;">&nbsp;// Definición del contrato</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">onClick</span>() <span style="color: #808080;">&nbsp;// Acción obligatoria sin código aún</span><br>
+}<br>
+<br>
+<span style="color: #cc7832; font-weight: bold;">class</span> <span style="color: #ffc66d;">BotonLogin</span> : <span style="color: #ffc66d;">AccionesUsuario</span> { <span style="color: #808080;">&nbsp;// La clase "firma" el contrato</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">override fun</span> <span style="color: #ffc66d;">onClick</span>() { <span style="color: #808080;">&nbsp;// Obligatorio implementar la función</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">println</span>(<span style="color: #6a8759;">"Iniciando sesión..."</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    // Ejemplo 2: Uso en Android
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">miBoton</span> = <span style="color: #ffc66d;">BotonLogin</span>() <span style="color: #808080;">&nbsp;// Creamos el objeto</span><br>
+<span style="color: #a9b7c6;">miBoton</span>.<span style="color: #ffc66d;">onClick</span>() <span style="color: #808080;">&nbsp;// El sistema sabe que este método EXISTE</span>`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif; text-align: center;">
+            <p style="margin-bottom: 15px; font-size: 14px; color: #555;">Simulador de Eventos (Interface)</p>
+            
+            <div id="click-box" style="border: 2px dashed #7f52ff; padding: 20px; border-radius: 8px; cursor: pointer; transition: 0.3s;" 
+                 onclick="this.style.background='#efecff'; document.getElementById('log').innerText='Contrato cumplido: onClick() ejecutado';">
+                <span style="color: #7f52ff; font-weight: bold;">[ ÁREA DE CLIC ]</span>
+                <p id="log" style="margin-top: 10px; font-size: 12px; color: #2ea043; font-weight: bold;"></p>
+            </div>
+            
+            <p style="font-size: 11px; color: #888; margin-top: 15px;">
+                Cualquier componente que implemente <b>AccionesUsuario</b> reaccionará al tocar esta área.
+            </p>
+        </div>
+    `
+},
+            {
+    title: "5. Clases Abstractas",
+    desc: `<b>Clase Abstracta:</b> Es una mezcla entre clase e interfaz. Puede tener funciones ya programadas y otras vacías (abstractas) que el hijo DEBE terminar.<br><br>
+           <b>Uso:</b> Se usa cuando todos los hijos son del mismo tipo (ej: Figuras), pero cada uno se dibuja distinto.`,
+    
+    feat: [
+        "<b>No instanciable:</b> No puedes hacer 'val x = Shape()', daría error porque la clase no está completa.",
+        "<b>Métodos Abstractos:</b> Son órdenes que el padre da pero no ejecuta (ej: 'todos deben calcularArea').",
+        "<b>Estado:</b> A diferencia de la interfaz, aquí sí puedes tener variables con valores (como el color o el nombre)."
+    ],
+
+    // Ejemplo 1: El molde incompleto (Padre) y la implementación (Hijo)
+    ex1: `<span style="color: #cc7832; font-weight: bold;">abstract class</span> <span style="color: #ffc66d;">Figura</span>(<span style="color: #9876aa;">val</span> <span style="color: #a9b7c6;">color</span>: <span style="color: #a9b7c6;">String</span>) { <span style="color: #808080;">&nbsp;// Molde incompleto</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">abstract fun</span> <span style="color: #ffc66d;">dibujar</span>() <span style="color: #808080;">&nbsp;// El padre dice QUÉ hacer, pero no CÓMO</span><br>
+}<br>
+<br>
+<span style="color: #cc7832; font-weight: bold;">class</span> <span style="color: #ffc66d;">Circulo</span>(<span style="color: #a9b7c6;">c</span>: <span style="color: #a9b7c6;">String</span>) : <span style="color: #ffc66d;">Figura</span>(<span style="color: #a9b7c6;">c</span>) { <span style="color: #808080;">&nbsp;// El hijo hereda del molde</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">override fun</span> <span style="color: #ffc66d;">dibujar</span>() { <span style="color: #808080;">&nbsp;// El hijo termina el trabajo</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">println</span>(<span style="color: #6a8759;">"Dibujando círculo color $color"</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    // Ejemplo 2: Uso en la lógica
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">redCircle</span> = <span style="color: #ffc66d;">Circulo</span>(<span style="color: #6a8759;">"Rojo"</span>) <span style="color: #808080;">&nbsp;// Creamos el objeto terminado</span><br>
+<span style="color: #a9b7c6;">redCircle</span>.<span style="color: #ffc66d;">dibujar</span>() <span style="color: #808080;">&nbsp;// Ejecuta la versión del hijo</span>`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif; text-align: center;">
+            <p style="margin-bottom: 15px; font-size: 13px; color: #666;">Resultado de la <b>Clase Concreta</b>:</p>
+            
+            <div style="display: flex; justify-content: center; align-items: center; gap: 20px;">
+                <div style="width: 60px; height: 60px; background: #ff4444; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">
+                    Círculo
+                </div>
+                
+                <div style="width: 60px; height: 60px; background: #7f52ff; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">
+                    Cuadrado
+                </div>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 10px;">
+                Ambos heredan de <b>Figura</b>, pero cada uno define su propia forma.
+            </p>
+        </div>
+    `
+},
+            {
+    title: "6. Encapsulamiento",
+    desc: `<b>Encapsulamiento:</b> Es la protección de los datos internos de un objeto. Ocultamos la complejidad y solo mostramos lo necesario.<br><br>
+           <b>Modificadores:</b> Usamos palabras como <b>private</b> para que nadie desde afuera pueda modificar variables críticas.`,
+    
+    feat: [
+        "<b>Seguridad:</b> Evita que otras partes de la App cambien datos importantes por accidente (como un ID o una contraseña).",
+        "<b>Private:</b> La variable solo es visible dentro de su propia clase.",
+        "<b>Public:</b> (Por defecto en Kotlin) La variable o función es accesible desde cualquier lugar."
+    ],
+
+    // Ejemplo 1: Protegiendo datos sensibles
+    ex1: `<span style="color: #cc7832; font-weight: bold;">class</span> <span style="color: #ffc66d;">Configuracion</span>() { <span style="color: #808080;">&nbsp;// Definición de la clase</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832;">private val</span> <span style="color: #9876aa;">apiKey</span>: <span style="color: #a9b7c6;">String</span> = <span style="color: #6a8759;">"12345"</span> <span style="color: #808080;">&nbsp;// Nadie puede ver esto desde afuera</span><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">obtenerUrl</span>(): <span style="color: #a9b7c6;">String</span> { <span style="color: #808080;">&nbsp;// Función pública para acceso controlado</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">return</span> <span style="color: #6a8759;">"https://api.com/v1/"</span> <span style="color: #808080;">&nbsp;// Retorna solo lo necesario</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    // Ejemplo 2: Intento de acceso
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">config</span> = <span style="color: #ffc66d;">Configuracion</span>() <span style="color: #808080;">&nbsp;// Instancia</span><br>
+<span style="color: #ffc66d;">println</span>(<span style="color: #a9b7c6;">config</span>.<span style="color: #ffc66d;">obtenerUrl</span>()) <span style="color: #808080;">&nbsp;// FUNCIONA: Acceso permitido</span><br>
+<span style="color: #808080;">// config.apiKey</span> <span style="color: #cc7832;">&lt;-- ERROR:</span> <span style="color: #808080;">No puedes acceder a datos privados</span>`,
+
+    ui: `
+        <div style="background: #1e1e1e; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-family: 'Courier New', monospace; color: #dcdcdc;">
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 15px;">
+                <span style="color: #3ddc84;">● Base de Datos</span>
+                <span style="color: #ff4444;">🔒 Protegido</span>
+            </div>
+            
+            <div style="padding: 10px; background: #2d2d2d; border-radius: 5px;">
+                <code style="color: #888;">// Datos internos ocultos:</code><br>
+                <code style="filter: blur(4px); opacity: 0.5;">apiKey = "AX-88293-K"</code><br>
+                <code style="filter: blur(4px); opacity: 0.5;">password = "admin123"</code>
+            </div>
+
+            <div style="margin-top: 15px; border-top: 1px solid #444; padding-top: 10px; text-align: center;">
+                <button style="background: #7f52ff; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-size: 11px;">
+                    Solicitar URL Pública (Getter)
+                </button>
+            </div>
+        </div>
+    `
+},
+            {
+    title: "7. Composición",
+    desc: `<b>Composición:</b> Es la técnica de construir componentes complejos uniendo piezas más pequeñas y simples. Es el pilar fundamental de Jetpack Compose.<br><br>
+           <b>Declarativo:</b> En lugar de heredar una vista gigante, defines funciones pequeñas que se anidan entre sí para formar la interfaz.`,
+    
+    feat: [
+        "<b>Modularidad:</b> Puedes crear piezas de UI (como un botón o una tarjeta) y reutilizarlas en cualquier parte de la App.",
+        "<b>Anidamiento:</b> Un componente puede recibir a otro componente como contenido (Slot API).",
+        "<b>Mantenibilidad:</b> Es mucho más fácil arreglar un pequeño bloque de Lego que toda una estructura rígida."
+    ],
+
+    // Ejemplo 1: Definición de un contenedor (El bloque de Lego hueco)
+    ex1: `<span style="color: #cc7832; font-weight: bold;">@Composable</span> <span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">MiContenedor</span>(<span style="color: #9876aa;">contenido</span>: <span style="color: #cc7832;">@Composable</span> () <span style="color: #cc7832;">-&gt;</span> <span style="color: #a9b7c6;">Unit</span>) { <span style="color: #808080;">&nbsp;// Recibe una pieza</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">Column</span> { <span style="color: #808080;">&nbsp;// Crea una columna vertical</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #9876aa;">contenido</span>() <span style="color: #808080;">&nbsp;// Dibuja la pieza recibida dentro del molde</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+}`,
+
+    // Ejemplo 2: Usando la composición (Armando el Lego)
+    ex2: `<span style="color: #ffc66d;">MiContenedor</span> { <span style="color: #808080;">&nbsp;// Llamamos al contenedor</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">Text</span>(<span style="color: #6a8759;">"Contenido Inyectado"</span>) <span style="color: #808080;">&nbsp;// Metemos una pieza de texto adentro</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #ffc66d;">Button</span>(...) <span style="color: #808080;">&nbsp;// Metemos una pieza de botón</span><br>
+}`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <div style="border: 2px solid #7f52ff; border-radius: 8px; padding: 15px; position: relative; background: #f4f0ff;">
+                <small style="position: absolute; top: -10px; left: 10px; background: #7f52ff; color: white; padding: 2px 8px; border-radius: 4px; font-size: 10px;">
+                    Contenedor (Padre)
+                </small>
+                
+                <div style="margin-top: 10px; background: white; border: 1px solid #3ddc84; padding: 15px; border-radius: 6px; text-align: center;">
+                    <span style="color: #3ddc84; font-weight: bold;">[ Pieza de Texto Hija ]</span>
+                    <p style="font-size: 12px; color: #666; margin: 5px 0 0 0;">Inyectada mediante Composición</p>
+                </div>
+
+                <button style="width: 100%; margin-top: 10px; padding: 8px; background: #3ddc84; color: white; border: none; border-radius: 4px; font-weight: bold;">
+                    [ Pieza Botón Hija ]
+                </button>
+            </div>
+            <p style="font-size: 11px; color: #999; margin-top: 15px; text-align: center;">
+                Fíjate cómo el marco morado <b>contiene</b> piezas verdes sin saber qué son.
+            </p>
+        </div>
+    `
+},
+           {
+    title: "8. Data Classes",
+    desc: `<b>Data Classes:</b> Son clases diseñadas exclusivamente para almacenar datos. Kotlin genera automáticamente métodos como equals(), hashCode() y toString().<br><br>
+           <b>Copy:</b> Permiten crear copias exactas de un objeto cambiando solo los valores que necesites, manteniendo la inmutabilidad.`,
+    
+    feat: [
+        "<b>Auto-generación:</b> No tienes que escribir manualmente las funciones de comparación de datos.",
+        "<b>Copy():</b> Ideal para actualizar estados en la UI sin modificar el objeto original.",
+        "<b>Desestructuración:</b> Permite extraer los valores de una clase directamente en variables."
+    ],
+
+    // Ejemplo 1: Definición simple y potente
+    ex1: `<span style="color: #cc7832; font-weight: bold;">data class</span> <span style="color: #ffc66d;">Usuario</span>( <span style="color: #808080;">&nbsp;// Kotlin hace el trabajo sucio</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832;">val</span> <span style="color: #9876aa;">id</span>: <span style="color: #a9b7c6;">Int</span>, <span style="color: #808080;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Identificador único</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832;">val</span> <span style="color: #9876aa;">nombre</span>: <span style="color: #a9b7c6;">String</span> <span style="color: #808080;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Nombre del perfil</span><br>
+)`,
+
+    // Ejemplo 2: El poder de la función copy()
+    ex2: `<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">user1</span> = <span style="color: #ffc66d;">Usuario</span>(<span style="color: #a9b7c6;">101</span>, <span style="color: #6a8759;">"Alex"</span>) <span style="color: #808080;">&nbsp;// Objeto original</span><br>
+<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">user2</span> = <span style="color: #a9b7c6;">user1</span>.<span style="color: #ffc66d;">copy</span>(<span style="color: #9876aa;">id</span> = <span style="color: #a9b7c6;">102</span>) <span style="color: #808080;">&nbsp;// Crea copia con ID nuevo</span>`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <div style="display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                <div style="font-size: 24px;">📄</div>
+                <div>
+                    <b style="color: #333;">User Data Class</b><br>
+                    <small style="color: #888;">Representación de Memoria</small>
+                </div>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 12px; border-radius: 8px; border-left: 4px solid #3ddc84;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span style="color: #666; font-size: 13px;">ID:</span>
+                    <b style="color: #a9b7c6;">101</b>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #666; font-size: 13px;">Nombre:</span>
+                    <b style="color: #9876aa;">Alex</b>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px; text-align: center;">
+                <button style="font-size: 11px; background: #eee; border: 1px solid #ccc; padding: 5px 10px; border-radius: 4px; color: #555; cursor: default;">
+                    toString() autogenerado
+                </button>
+            </div>
+        </div>
+    `
+},
+            {
+    title: "9. Sealed Classes",
+    desc: `<b>Sealed Classes:</b> Representan una jerarquía cerrada. Son ideales para manejar <b>Estados de UI</b> porque el compilador sabe exactamente cuántas opciones existen.<br><br>
+           <b>Seguridad:</b> Al usar 'when', Kotlin te obliga a cubrir todos los casos (Éxito, Error, Carga), evitando errores en tiempo de ejecución.`,
+    
+    feat: [
+        "<b>Jerarquía Restringida:</b> Solo las clases definidas dentro del mismo archivo pueden heredar de ella.",
+        "<b>Estados de UI:</b> Perfectas para representar estados como 'Loading', 'Success' y 'Error'.",
+        "<b>When Exhaustivo:</b> No necesitas usar 'else' en un 'when' si cubres todos los casos sellados."
+    ],
+
+    // Ejemplo 1: Definición de estados (La máquina de estados)
+    ex1: `<span style="color: #cc7832; font-weight: bold;">sealed class</span> <span style="color: #ffc66d;">UiState</span> { <span style="color: #808080;">&nbsp;// Clase sellada</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">object</span> <span style="color: #a9b7c6;">Loading</span> : <span style="color: #ffc66d;">UiState</span>() <span style="color: #808080;">&nbsp;// Estado sin datos</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">data class</span> <span style="color: #ffc66d;">Success</span>(<span style="color: #cc7832;">val</span> <span style="color: #9876aa;">data</span>: <span style="color: #a9b7c6;">String</span>) : <span style="color: #ffc66d;">UiState</span>() <span style="color: #808080;">&nbsp;// Estado con datos</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">object</span> <span style="color: #a9b7c6;">Error</span> : <span style="color: #ffc66d;">UiState</span>() <span style="color: #808080;">&nbsp;// Estado de fallo</span><br>
+}`,
+
+    // Ejemplo 2: Manejo seguro con 'when'
+    ex2: `<span style="color: #cc7832; font-weight: bold;">when</span> (<span style="color: #9876aa;">state</span>) { <span style="color: #808080;">&nbsp;// El compilador verifica todos los casos</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">is</span> <span style="color: #a9b7c6;">UiState.Loading</span> <span style="color: #cc7832;">-&gt;</span> <span style="color: #ffc66d;">showSpinner</span>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">is</span> <span style="color: #a9b7c6;">UiState.Success</span> <span style="color: #cc7832;">-&gt;</span> <span style="color: #ffc66d;">showData</span>(<span style="color: #9876aa;">state</span>.<span style="color: #9876aa;">data</span>)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">is</span> <span style="color: #a9b7c6;">UiState.Error</span> <span style="color: #cc7832;">-&gt;</span> <span style="color: #ffc66d;">showError</span>()<br>
+}`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif; text-align: center;">
+            <div id="ui-container" style="min-height: 100px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div style="width: 30px; height: 30px; border: 3px solid #f3f3f3; border-top: 3px solid #7f52ff; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <p style="color: #7f52ff; font-weight: bold; margin-top: 10px;">⏳ Cargando Estado...</p>
+            </div>
+            
+            <style> @keyframes spin { to { transform: rotate(360deg); } } </style>
+            
+            <div style="margin-top: 15px; display: flex; gap: 5px; justify-content: center;">
+                <span style="font-size: 10px; background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 10px;">Loading</span>
+                <span style="font-size: 10px; background: #e8f5e9; color: #2e7d32; padding: 2px 6px; border-radius: 10px;">Success</span>
+                <span style="font-size: 10px; background: #ffebee; color: #c62828; padding: 2px 6px; border-radius: 10px;">Error</span>
+            </div>
+        </div>
+    `
+},
+            {
+    title: "10. Singleton (Object)",
+    desc: `<b>Singleton:</b> Es un patrón de diseño que garantiza que una clase tenga <b>una única instancia</b> en toda la aplicación.<br><br>
+           <b>Palabra 'object':</b> En Kotlin, al usar 'object' en lugar de 'class', el lenguaje crea automáticamente la instancia única por ti.`,
+    
+    feat: [
+        "<b>Instancia Única:</b> No importa cuántas veces lo llames, siempre estarás usando el mismo objeto en memoria.",
+        "<b>Acceso Global:</b> Puedes acceder a sus propiedades desde cualquier parte de la App sin crear el objeto con ().",
+        "<b>Eficiencia:</b> Ahorra memoria al no crear múltiples copias de componentes pesados como bases de datos."
+    ],
+
+    // Ejemplo 1: Creación del Singleton
+    ex1: `<span style="color: #cc7832; font-weight: bold;">object</span> <span style="color: #ffc66d;">ConfigDB</span> { <span style="color: #808080;">&nbsp;// Se define con 'object', no con 'class'</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832;">val</span> <span style="color: #9876aa;">nombre</span>: <span style="color: #a9b7c6;">String</span> = <span style="color: #6a8759;">"App_Database"</span> <span style="color: #808080;">&nbsp;// Propiedad global</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #cc7832; font-weight: bold;">fun</span> <span style="color: #ffc66d;">conectar</span>() { <span style="color: #ffc66d;">println</span>(<span style="color: #6a8759;">"Conectado"</span>) } <span style="color: #808080;">&nbsp;// Método global</span><br>
+}`,
+
+    // Ejemplo 2: Uso directo sin instanciar
+    ex2: `<span style="color: #ffc66d;">ConfigDB</span>.<span style="color: #ffc66d;">conectar</span>() <span style="color: #808080;">&nbsp;// Se accede directamente por el nombre</span><br>
+<span style="color: #cc7832; font-weight: bold;">val</span> <span style="color: #a9b7c6;">db</span> = <span style="color: #ffc66d;">ConfigDB</span>.<span style="color: #9876aa;">nombre</span> <span style="color: #808080;">&nbsp;// No se usa "ConfigDB()"</span>`,
+
+    ui: `
+        <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-family: sans-serif;">
+            <div style="display: flex; align-items: center; justify-content: center; background: #fff3e0; border: 2px solid #ff9800; border-radius: 50%; width: 60px; height: 60px; margin: 0 auto 15px auto;">
+                <span style="font-size: 24px;">⚙️</span>
+            </div>
+            <div style="text-align: center;">
+                <b style="color: #333; display: block; margin-bottom: 5px;">Configuración Activa</b>
+                <span style="font-size: 11px; background: #ff9800; color: white; padding: 2px 8px; border-radius: 10px;">INSTANCIA ÚNICA</span>
+                
+                <div style="margin-top: 15px; background: #f8f9fa; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #666; border: 1px solid #eee;">
+                    DB: App_Database<br>
+                    Status: <span style="color: #3ddc84;">Running</span>
+                </div>
+            </div>
+            <p style="font-size: 10px; color: #999; margin-top: 15px; text-align: center;">
+                Toda la App comparte este mismo bloque de configuración.
+            </p>
+        </div>
+    `
+},
+
+   {
+    title: "11. Video sobre Programación Orientada a Objetos",
+    desc: `La <b>Programación Orientada a Objetos (POO)</b> es un paradigma de programación que utiliza 'objetos' para representar datos y métodos. 
+           Se basa en cuatro pilares fundamentales: la <b>Abstracción</b>, el <b>Encapsulamiento</b>, la <b>Herencia</b> y el <b>Polimorfismo</b>. 
+           Este enfoque permite que el desarrollo en Android Studio sea más modular, facilitando el mantenimiento y la reutilización de código en proyectos complejos.`,
+    feat: [], 
+    ex1: "", 
+    ex2: "",
+    // VIDEO PARA EL CENTRO (Tu video)
+    ui_centro: `
+        <div style="margin-top: 25px;">
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 12px; background: #000; box-shadow: 0 10px 25px rgba(0,0,0,0.4);">
+                <iframe 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                    src="https://www.youtube.com/embed/RQP8IcUifeU" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    `,
+    // VIDEO PARA EL TELÉFONO (Tutorial educativo)
+    ui_telefono: `
+        <div style="position: relative; padding-bottom: 177%; height: 0; overflow: hidden; border-radius: 8px; background: #000;">
+            <iframe 
+                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+                src="https://www.youtube.com/embed/SI7O81GMG2A" 
+                title="Tutorial POO Kotlin"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <p style="font-size: 10px; color: #666; text-align: center; margin-top: 10px;">Tutorial: Pilares de la POO</p>
+    `
+}
+        ];
+
+       function update(idx) {
+    const item = topics[idx];
+    
+    // Marcar botón activo en el menú
+    document.querySelectorAll('.menu-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+
+    const contentArea = document.getElementById('content-area');
+
+    if (idx === 10) { 
+        // DISEÑO ESPECIAL PARA EL VIDEO (OCULTA CONCEPTOS Y SINTAXIS)
+        contentArea.innerHTML = `
+            <div class="card">
+                <h1>${item.title}</h1>
+                <p style="font-size:1.15em; line-height:1.6; color: #c9d1d9;">${item.desc}</p>
+                ${item.ui_centro}
+            </div>
+        `;
+    } else {
+        // DISEÑO NORMAL PARA LOS OTROS TEMAS
+        contentArea.innerHTML = `
+            <div class="card">
+                <h1>${item.title}</h1>
+                <p style="font-size:1.2em;">${item.desc}</p>
+                <div class="info-box">
+                    <h3>📋 Conceptos Clave</h3>
+                    <ul>${item.feat.map(f => `<li>${f}</li>`).join('')}</ul>
+                </div>
+                <h3>Ejemplo 1: Sintaxis</h3>
+                <code>${item.ex1}</code>
+                <h3>Ejemplo 2: Uso en App</h3>
+                <code>${item.ex2}</code>
+            </div>
+        `;
+    }
+
+    // Actualizar el teléfono de la derecha con el video tutorial
+    document.getElementById('phone-title').innerText = item.title;
+    document.getElementById('phone-body').innerHTML = idx === 10 ? item.ui_telefono : item.ui;
+}
+
+        window.onload = () => update(0);
+    </script>
+    
+</body>
+</html>
