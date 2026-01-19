@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POO Ultimate Guide - Android Dev</title>
-    <style>
+   <style>
         :root {
             --bg: #0d1117;
             --sidebar: #161b22;
@@ -22,6 +22,7 @@
             margin: 0;
             display: flex;
             height: 100vh;
+            overflow: hidden; /* Mantenemos el layout fijo */
         }
 
         /* Navegación */
@@ -32,6 +33,7 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
+            flex-shrink: 0;
         }
 
         .sidebar-header {
@@ -66,6 +68,7 @@
             flex: 1;
             padding: 40px;
             overflow-y: auto;
+            min-width: 0;
         }
 
         .card { animation: slideIn 0.3s ease-out; }
@@ -88,6 +91,7 @@
             margin: 15px 0;
             border: 1px solid #30363d;
             line-height: 1.5;
+            overflow-x: auto;
         }
 
         /* Preview Móvil */
@@ -99,6 +103,7 @@
             align-items: center;
             justify-content: center;
             border-left: 1px solid #30363d;
+            flex-shrink: 0;
         }
 
         .phone {
@@ -117,6 +122,7 @@
             color: #000;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
 
         .screen-header {
@@ -127,24 +133,17 @@
             text-align: center;
         }
 
+        /* --- ARREGLO PARA MÓVIL --- */
+        @media (max-width: 900px) {
+            body { flex-direction: column; overflow-y: auto; height: auto; }
+            .sidebar { width: 100%; height: 300px; border-right: none; }
+            .mobile-pane { width: 100%; border-left: none; padding: 40px 0; }
+            .main-content { padding: 20px; }
+        }
+
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
-        }
-
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 8px;
-            background: #000;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border: 0;
         }
     </style>
 </head>
@@ -723,3 +722,4 @@ ex1: `<span style="color: #cc7832; font-weight: bold;">class</span> <span style=
 </body>
 
 </html>
+
