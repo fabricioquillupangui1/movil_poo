@@ -679,48 +679,47 @@ ex1: `<span style="color: #cc7832; font-weight: bold;">class</span> <span style=
 }
         ];
 
-       function update(idx) {
+      function update(idx) {
     const item = topics[idx];
     
-    // Marcar botón activo en el menú
+    // Activar botón
     document.querySelectorAll('.menu-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
 
     const contentArea = document.getElementById('content-area');
 
     if (idx === 10) { 
-        // DISEÑO ESPECIAL PARA EL VIDEO (OCULTA CONCEPTOS Y SINTAXIS)
+        // Estilo limpio para el video explicativo
         contentArea.innerHTML = `
             <div class="card">
                 <h1>${item.title}</h1>
-                <p style="font-size:1.15em; line-height:1.6; color: #c9d1d9;">${item.desc}</p>
+                <p style="font-size:1.1em; line-height:1.6;">${item.desc}</p>
                 ${item.ui_centro}
             </div>
         `;
     } else {
-        // DISEÑO NORMAL PARA LOS OTROS TEMAS
+        // Estilo normal para el resto
         contentArea.innerHTML = `
             <div class="card">
                 <h1>${item.title}</h1>
-                <p style="font-size:1.2em;">${item.desc}</p>
+                <p>${item.desc}</p>
                 <div class="info-box">
                     <h3>📋 Conceptos Clave</h3>
                     <ul>${item.feat.map(f => `<li>${f}</li>`).join('')}</ul>
                 </div>
-                <h3>Ejemplo 1: Sintaxis</h3>
                 <code>${item.ex1}</code>
-                <h3>Ejemplo 2: Uso en App</h3>
                 <code>${item.ex2}</code>
             </div>
         `;
     }
 
-    // Actualizar el teléfono de la derecha con el video tutorial
+    // Actualizar teléfono
     document.getElementById('phone-title').innerText = item.title;
+    // IMPORTANTE: Aquí asignamos el video tutorial específico para el teléfono
     document.getElementById('phone-body').innerHTML = idx === 10 ? item.ui_telefono : item.ui;
 }
-
         window.onload = () => update(0);
     </script>
     
 </body>
+
 </html>
